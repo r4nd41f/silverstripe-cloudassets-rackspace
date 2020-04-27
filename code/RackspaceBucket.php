@@ -58,6 +58,13 @@ class RackspaceBucket extends CloudBucket
             $client = new Rackspace(Rackspace::US_IDENTITY_ENDPOINT, array(
                 'username'      => $this->config[self::USERNAME],
                 'apiKey'        => $this->config[self::API_KEY],
+            ), array(
+                // Guzzle ships with outdated certs
+                Rackspace::SSL_CERT_AUTHORITY => 'system',
+                Rackspace::CURL_OPTIONS => array(
+                    CURLOPT_SSL_VERIFYPEER => true,
+                    CURLOPT_SSL_VERIFYHOST => 2,
+                ),
             ));
 
             $service = $client->objectStoreService('cloudFiles', $this->config[self::REGION],
